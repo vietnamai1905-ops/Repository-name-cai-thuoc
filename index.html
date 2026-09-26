@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cai thuốc · Mốc tiếp theo</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="shade"></div><main class="app">
+<section class="hero"><div class="eyebrow">MỘT MỐC NỮA, MỘT NGÀY NỮA</div><h1>Hành trình cai thuốc</h1>
+<div id="streak" class="streak">Chưa bắt đầu</div><div id="meta" class="muted">Chọn giờ hút điếu cuối rồi bấm Lưu thời điểm bắt đầu.</div>
+<div class="next-card"><div id="nextTitle" class="label"></div><div id="countdown" class="countdown">--:--:--</div>
+<div id="benefit" class="benefit"></div><div class="bar"><div id="barFill"></div></div><div id="target" class="muted"></div></div></section>
+<section class="panel"><label>Điếu cuối lúc</label><input id="startInput" type="datetime-local">
+<div class="buttons"><button id="saveStart">Lưu thời điểm bắt đầu</button><button id="crapBtn" class="secondary">CRAP · Ghi cảm nghĩ</button></div>
+<div class="buttons"><button id="exportBtn" class="outline">↓ Lưu dữ liệu ra file riêng</button><label class="button secondary">↑ Nhập dữ liệu<input id="importInput" type="file" accept=".json" hidden></label></div>
+<button id="historyBtn" class="secondary full">Xem các ghi chú CRAP</button>
+<p id="journey" class="muted"></p><p id="recent" class="muted"></p><div class="eyebrow">CÁC MỐC VÀ LỜI NHẮC</div>
+<div id="milestones" class="milestones"></div><p class="foot">Các mốc sức khỏe là ước lượng chung; các mốc xen giữa là mốc động lực.</p></section>
+</main>
+<dialog id="crapDialog"><h3>CRAP · Ghi lại khoảnh khắc</h3><p>Lúc này anh đang cảm thấy thế nào?</p><p id="advice" class="tip"></p><textarea id="thoughts" placeholder="Viết điều đang nghĩ, nguyên nhân khiến anh muốn hút, hoặc cách anh vừa vượt qua..."></textarea><div class="buttons"><button id="saveCrap">Lưu cảm nghĩ</button><button class="secondary" onclick="crapDialog.close()">Đóng</button></div></dialog>
+<dialog id="historyDialog"><h3>Ghi chú CRAP</h3><div id="history"></div><button class="secondary full" onclick="historyDialog.close()">Đóng</button></dialog>
+<script src="app.js"></script></body></html>
