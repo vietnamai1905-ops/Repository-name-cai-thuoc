@@ -10,7 +10,7 @@ const MILESTONES=[
 const ADVICE=['Cơn thèm sẽ qua. Đổi chỗ, uống nước và chờ thêm vài phút.','Thử thở chậm và đi bộ ngắn.','Viết ra điều làm mình muốn hút: nhận ra tác nhân sẽ giúp ứng phó.','Không cần thắng cả đời trong hôm nay. Chỉ cần vượt qua phút này.'];
 const $=id=>document.getElementById(id); const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let data={started:null,last:null,lapses:[],craps:[]};try{const saved=JSON.parse(localStorage.getItem(KEY)||(PLAYER==='nathan'?localStorage.getItem(LEGACY_KEY):null));if(saved&&typeof saved==='object')data={...data,...saved}}catch(e){}
-function save(){localStorage.setItem(KEY,JSON.stringify(data));syncPlayer().catch(()=>{})}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
 const pad=n=>String(n).padStart(2,'0');
 function duration(s){s=Math.max(0,Math.floor(s));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;return `${d?d+' ngày ':''}${pad(h)}:${pad(Math.floor(s/60))}:${pad(s%60)}`}
 function formatDate(d){return `${pad(d.getHours())}:${pad(d.getMinutes())} · ${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`}
@@ -36,32 +36,4 @@ $('journeyBtn').onclick=()=>{if(!data.started)return alert('Hãy lưu ngày bắ
 $('exportBtn').onclick=()=>{if(!data.started)return alert('Hãy lưu ngày bắt đầu trước.');const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='CaiThuoc_DuLieu_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)};
 $('importInput').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>4e6)throw Error('File quá lớn');const x=JSON.parse(await file.text());if(!x.started||!x.last||!Number.isFinite(Date.parse(x.started))||!Number.isFinite(Date.parse(x.last))||Date.parse(x.started)>Date.now()||Date.parse(x.last)>Date.now()||!Array.isArray(x.lapses)||!Array.isArray(x.craps))throw Error('Cấu trúc không hợp lệ');if(data.started&&!confirm('Dữ liệu nhập sẽ thay thế dữ liệu hiện tại. Hãy sao lưu trước khi tiếp tục.'))return;data={started:x.started,last:x.last,lapses:x.lapses,craps:x.craps};save();$('startInput').value=toLocalInput(new Date(data.started));lastRender='';update();alert('Đã nhập dữ liệu thành công.')}catch(err){alert('Không thể nhập file: '+err.message)}finally{e.target.value=''}};
 document.querySelectorAll('[data-close]').forEach(el=>el.onclick=() =>$(el.dataset.close).close());update();setInterval(update,1000);
-
-
-/* Bảng xếp hạng cũ - đồng bộ với dữ liệu riêng của từng người chơi. */
-const SUPABASE_URL='https://zveakwdlnuxoxzetxxlr.supabase.co';
-const SUPABASE_KEY='sb_publishable_kp5ktvdrJSarFUOSNv92LA_i8u5pPfF';
-async function api(path,options={}){
- const res=await fetch(SUPABASE_URL+'/rest/v1/'+path,{...options,headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',...(options.headers||{})}});
- if(!res.ok)throw new Error('Sync HTTP '+res.status);
- if(res.status===204)return null;
- const body=await res.text();return body?JSON.parse(body):null;
-}
-async function syncPlayer(){
- if(!data.started)return;
- const payload={player_id:PLAYER,player_name:PLAYER_NAME,started_at:data.started,last_at:data.last,lapses:(data.lapses||[]).length,updated_at:new Date().toISOString()};
- try{await api('players?on_conflict=player_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload)});$('syncHint').textContent='Đã đồng bộ bảng xếp hạng.';}
- catch(e){try{await api('players?player_id=eq.'+encodeURIComponent(PLAYER),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({started_at:data.started,last_at:data.last,lapses:payload.lapses,updated_at:payload.updated_at})});$('syncHint').textContent='Đã gửi cập nhật bảng điểm.';}catch(_){$('syncHint').textContent='Bảng điểm chưa đồng bộ được. Nhật ký trên thiết bị vẫn được giữ.';}}
-}
-async function loadRanking(){
- $('rankStatus').textContent='Đang tải...';
- try{const rows=await api('players?select=player_id,player_name,last_at,lapses&order=player_name.asc');const now=Date.now();
- const ranked=rows.map(x=>({...x,points:Math.max(0,Math.floor((now-Date.parse(x.last_at||now))/1000)-(x.lapses||0)*300)})).sort((a,b)=>b.points-a.points);
- $('ranking').innerHTML=ranked.map((x,i)=>'<div class="entry"><b>'+(i+1)+'. '+escapeHTML(x.player_id==='hoangtu'?'Kieuquyen':x.player_name||x.player_id)+'</b> · '+x.points.toLocaleString('vi-VN')+' điểm · 🚬 '+(x.lapses||0)+'</div>').join('')||'Chưa có dữ liệu.';
- $('rankStatus').textContent='Bảng xếp hạng trực tuyến · +1 điểm/giây, trừ 300 điểm/lần hút lại';
- }catch(e){$('rankStatus').textContent='Không kết nối được bảng điểm. Dữ liệu cá nhân vẫn an toàn.';}
-}
 $('playerTitle').textContent=PLAYER_NAME;
-$('rankBtn').onclick=()=>{$('rankDialog').showModal();loadRanking()};
-$('refreshRank').onclick=loadRanking;
-if(data.started)syncPlayer().catch(()=>{});
