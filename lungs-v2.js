@@ -42,7 +42,7 @@
  const reset=document.getElementById('lungBackNow');
  if(!photo||!healthy||!timeline)return;
  let day=0,preview=-1,last=-1;
- const imagePaths=['lung-bad-v6.avif','lung-good-v6.avif'];
+ const imagePaths=['lung-bad-v6.avif?v=hd800','lung-good-v6.avif?v=hd800'];
  Promise.all(imagePaths.map(path=>new Promise((resolve,reject)=>{const img=new Image();img.onload=resolve;img.onerror=reject;img.src=path;})))
  .then(()=>{photo.classList.add('loaded');if(fallback)fallback.style.display='none';})
  .catch(()=>{if(fallback)fallback.style.display='block';console.warn('Unable to load V6 image pair')});

@@ -155,8 +155,8 @@ main>.milestones-panel{order:6;min-width:0}
  background-repeat:no-repeat!important;transform-origin:50% 56%!important;
  filter:none!important;animation:v6-breath 5.3s ease-in-out infinite!important;
  will-change:transform,opacity}
-.lung-photo-dark{background-image:url('lung-bad-v6.avif')!important;opacity:1!important}
-.lung-photo-healthy{background-image:url('lung-good-v6.avif')!important;opacity:0;
+.lung-photo-dark{background-image:url('lung-bad-v6.avif?v=hd800')!important;opacity:1!important}
+.lung-photo-healthy{background-image:url('lung-good-v6.avif?v=hd800')!important;opacity:0;
  transition:opacity .85s ease-in-out!important}
 .lung-photo.loaded~#lungIllustration{display:none!important}
 .lung-depth-glint{position:absolute;inset:8% 12%;pointer-events:none;
