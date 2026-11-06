@@ -1,9 +1,7 @@
-# Tôi đã bỏ thuốc 3D — Website hiện tại
+# Tôi đã bỏ thuốc — V2 hành trình lá phổi
 
-Bản thay thế giao diện có phổi 3D, dựa trên repository toidabothuoc3d. Dùng chung URL GitHub Pages hiện có.
+Trang cũ nâng cấp lên V2 với **24 giai đoạn minh họa phổi**, gồm 0, 1, 2, 3, 4, 6, 8, 10, 12, 14 ngày..., cho phép bấm timeline để xem, quay lại hiện tại. Không dùng WebGL hay CDN cho mô hình, vì vậy sẽ tải nhanh hơn.
 
-- Dữ liệu cá nhân giữ khóa cũ: `caiThuocDataV1_nathan`, `caiThuocDataV1_hoangtu`.
-- Dùng `?player=nathan` hoặc `?player=Kieuquyen` để đổi người chơi.
-- Bảng xếp hạng đồng bộ Supabase như phiên bản cũ.
-- Không xóa ảnh và CSS giao diện cũ, có thể phục hồi từ nhánh `backup-before-3d-20261106`.
-- Mô phỏng phổi chỉ mang tính minh họa, không phải đo sức khỏe lâm sàng.
+**Lưu ý y khoa**: Đây là hình minh họa tạo động lực. Màu sắc/đốm trên phổi KHÔNG phản ánh tiến triển thực tế hoặc chẩn đoán; các tổn thương có thể không hồi phục. Mốc sức khỏe là thông tin tham khảo.
+
+Dữ liệu vẫn dùng `caiThuocDataV1_nathan`, `caiThuocDataV1_hoangtu`. Bảng xếp hạng cũ vẫn dùng Supabase. Bản trước được lưu tại nhánh `backup-before-lung-v2-20261106`.
