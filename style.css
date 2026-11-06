@@ -25,9 +25,9 @@
 /* MOBILE FIRST V3: đồng hồ đầu, phổi tham khảo ngay kế tiếp. */
 main{display:flex!important;flex-direction:column!important;gap:12px!important;max-width:900px!important;align-items:stretch!important;}
 main>.dashboard{display:contents!important}
-.dashboard>.hero:first-child{order:1;min-width:0}
+.dashboard>.hero:first-child{order:3;min-width:0}
 main>.visual{order:2;min-width:0}
-.dashboard>.hero:nth-child(2){order:3}
+.dashboard>.hero:nth-child(2){order:1}
 .dashboard>.milestone-next{order:4}
 .dashboard>.controls{order:5}
 main>.milestones-panel{order:6;min-width:0}
