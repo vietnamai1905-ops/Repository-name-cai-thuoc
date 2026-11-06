@@ -33,7 +33,14 @@ const svg=document.getElementById('lungIllustration');
 const timeline=document.getElementById('lungTimeline');
 const photo=document.getElementById('lungPhoto'), healthy=document.getElementById('lungPhotoHealthy');
 const level=document.getElementById('lungVisualLevel');
-if(photo){const sample=new Image();sample.onload=()=>photo.classList.add('loaded');sample.onerror=()=>console.warn('Ảnh phổi không tải được, dùng hình dự phòng');sample.src='lung-reference-original.webp?v=5';}
+if(photo){
+  // Prefer two anatomically distinct assets, only enable when BOTH are available.
+  // Existing V5 image remains visible until both assets arrive at this repository.
+  const files=['lung-damaged-v6.webp','lung-healthy-v6.webp'];
+  Promise.all(files.map(src=>new Promise((resolve,reject)=>{const im=new Image();im.onload=resolve;im.onerror=reject;im.src=src+'?v=6';})))
+   .then(()=>{photo.classList.add('loaded','dual-lungs-v6')})
+   .catch(()=>{const sample=new Image();sample.onload=()=>photo.classList.add('loaded');sample.onerror=()=>console.warn('Ảnh phổi chưa tải được; sử dụng SVG dự phòng');sample.src='lung-reference-original.webp?v=5';});
+}
 if(!svg||!timeline)return;
 const NS='http://www.w3.org/2000/svg';
 const left='M307 148 C275 119 225 118 192 137 C150 161 118 205 107 270 C91 361 114 448 164 464 C203 477 267 458 293 419 C309 391 307 346 305 302 L305 211 Z';
@@ -90,7 +97,7 @@ function render(index){
  const i=Math.max(0,Math.min(days.length-1,index));
  if(rendered===i)return;rendered=i;
  const t=i/(days.length-1);
- if(healthy)healthy.style.opacity=String(Math.min(1,Math.pow(t,.74)));
+ if(healthy)healthy.style.opacity=String(Math.min(1,Math.pow(t,1.05)));
  if(level)level.textContent='Mức minh họa '+(i+1)+'/24';
  if(photo)photo.style.setProperty('--lung-stage',String(i));
  const start=[65,48,54],end=[230,149,148];

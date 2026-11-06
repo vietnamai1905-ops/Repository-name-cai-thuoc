@@ -119,3 +119,25 @@ main>.milestones-panel{order:6;min-width:0}
 @media(max-width:760px){
   .lung-photo{height:100%!important;width:min(100%,395px)!important}
 }
+
+/* FINAL V6: two distinct detailed lungs, transparent cut-outs.
+   Only activate after both files are loaded; older V5 remains as fallback. */
+.lung-stage-v2{background:radial-gradient(ellipse at 50% 46%,#174b4e 0%,#0d3138 50%,#0b232b 100%)!important;border:1px solid #30545a!important;overflow:hidden}
+.lung-photo{background:transparent!important}
+.lung-photo.dual-lungs-v6 .lung-photo-dark,
+.lung-photo.dual-lungs-v6 .lung-photo-healthy{
+ background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important;
+ filter:drop-shadow(0 12px 20px rgba(0,0,0,.38))!important;
+ opacity:1;
+}
+.lung-photo.dual-lungs-v6 .lung-photo-dark{background-image:url('lung-damaged-v6.webp?v=6')!important}
+.lung-photo.dual-lungs-v6 .lung-photo-healthy{background-image:url('lung-healthy-v6.webp?v=6')!important;opacity:0}
+.lung-photo.dual-lungs-v6 .lung-tissue-light{mix-blend-mode:screen;opacity:.12;inset:3%}
+.lung-photo.dual-lungs-v6 .lung-shadow-v4{box-shadow:none}
+.lung-photo.dual-lungs-v6{overflow:visible!important}
+.lung-photo.dual-lungs-v6 .lung-photo-layer{animation:breathRealV4 5.2s ease-in-out infinite!important;will-change:transform,opacity;transform-origin:50% 57%}
+@media(max-width:760px){
+ .lung-stage-v2{height:clamp(310px,85vw,440px)!important;min-height:310px!important}
+ .lung-photo{width:min(100%,420px)!important}
+}
+@media(prefers-reduced-motion:reduce){.lung-photo.dual-lungs-v6 .lung-photo-layer{animation:none!important}}

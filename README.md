@@ -14,3 +14,8 @@ File `lung-healthy-v4.webp` là hình phổi nghệ thuật do AI tạo mới, t
 
 ## V5 – ảnh chuẩn theo người dùng
 Asset `lung-reference-original.webp` được chuyển trực tiếp từ ảnh giải phẫu phổi **do người dùng cung cấp**. Màn hình dùng 2 lớp từ cùng 1 ảnh này nên không nhảy sang hình phổi SVG hoạt hình. Chuyển màu và chuyển động chỉ là minh họa; không phải mô hình giải phẫu 3D tương tác thực sự.
+
+## V6 – hai ảnh phổi độc lập, đúng cấu trúc
+Đặt **hai file ảnh** `lung-damaged-v6.webp` (phổi tổn thương nặng) và `lung-healthy-v6.webp` (phổi khỏe) vào thư mục gốc, cùng `index.html`. Hai ảnh đều nền alpha trong suốt. Mã có sẵn kiểm tra tải ảnh: chỉ chuyển sang V6 khi cả hai file đều tải thành công, tránh hình trống.
+
+Chuyển hình theo 24 mốc, gồm thay đổi của hình phế quản, vùng cuống phổi và mạng mạch trong **minh họa**. Đây không phải diễn biến thực tế của các tổn thương do thuốc lá, và không nên hiểu rằng phổi bị tổn thương nặng sẽ trở lại bình thường sau một thời hạn cố định. Hiệu ứng thở, ánh sáng và nghiêng nhẹ tạo cảm giác 2.5D; đây không phải mô hình 3D quét chụp hoặc xoay toàn phần.
