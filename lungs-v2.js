@@ -32,6 +32,7 @@ const notes=[
 const svg=document.getElementById('lungIllustration');
 const timeline=document.getElementById('lungTimeline');
 const photo=document.getElementById('lungPhoto'), healthy=document.getElementById('lungPhotoHealthy');
+const level=document.getElementById('lungVisualLevel');
 if(photo){const sample=new Image();sample.onload=()=>photo.classList.add('loaded');sample.onerror=()=>console.warn('Ảnh phổi không tải được, dùng hình dự phòng');sample.src='lung-reference.webp?v=20261106';}
 if(!svg||!timeline)return;
 const NS='http://www.w3.org/2000/svg';
@@ -89,7 +90,8 @@ function render(index){
  const i=Math.max(0,Math.min(days.length-1,index));
  if(rendered===i)return;rendered=i;
  const t=i/(days.length-1);
- if(healthy)healthy.style.opacity=String(Math.min(1,Math.pow(t,.72)));
+ if(healthy)healthy.style.opacity=String(Math.min(1,Math.pow(t,.74)));
+ if(level)level.textContent='Mức minh họa '+(i+1)+'/24';
  if(photo)photo.style.setProperty('--lung-stage',String(i));
  const start=[65,48,54],end=[230,149,148];
  const mid=color(start,end,t);
@@ -119,4 +121,14 @@ window.setLungProgress=hours=>{
  if(preview<0)reset.hidden=true;
 };
 window.setLungProgress(0);
+})();
+/* Subtle interaction: a pseudo-3D parallax tilt without changing medical anatomy. */
+(() => {
+const stage=document.getElementById('lungStage'),photo=document.getElementById('lungPhoto');
+if(!stage||!photo)return;
+let dragging=false,startX=0,startY=0;
+stage.addEventListener('pointerdown',ev=>{dragging=true;startX=ev.clientX;startY=ev.clientY;stage.setPointerCapture?.(ev.pointerId)});
+stage.addEventListener('pointermove',ev=>{if(!dragging)return;const dx=Math.max(-60,Math.min(60,ev.clientX-startX)),dy=Math.max(-60,Math.min(60,ev.clientY-startY));photo.style.setProperty('--lung-tilt',(dx*.18).toFixed(2)+'deg');photo.style.setProperty('--lung-tilt-x',(-dy*.11).toFixed(2)+'deg')});
+const end=()=>{dragging=false;photo.style.setProperty('--lung-tilt','0deg');photo.style.setProperty('--lung-tilt-x','0deg')};
+stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);stage.addEventListener('lostpointercapture',end);
 })();

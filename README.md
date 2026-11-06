@@ -5,3 +5,6 @@ Trên điện thoại: đồng hồ hành trình đặt đầu trang; tiếp đ�
 Sử dụng **ảnh tham khảo của người dùng** (file `lung-reference.webp`): hai mô hình phổi của người hút thuốc và phổi khỏe mạnh. Trạng thái giữa hai ảnh được **pha trộn theo 24 mốc mang tính biểu tượng**, không phải mô phỏng quá trình hồi phục thật.
 
 Các tính năng cũ, tách dữ liệu riêng Nathan/Kieuquyen và bảng xếp hạng giữ nguyên. Dữ liệu `localStorage` không bị xóa. Ảnh gốc độ phân giải cao có thể thay thế asset `lung-reference.webp` mà không phải sửa code.
+
+## V4
+Đã thêm hiệu ứng hô hấp riêng cho hình phổi, phản quang, độ sâu giả lập, kéo ngón tay để nghiêng mô hình trên điện thoại, và hiển thị mốc 1–24. Các chức năng theo dõi và bộ nhớ dữ liệu không thay đổi. Hình ảnh là minh họa động lực, không phải biểu đồ hồi phục y khoa.
