@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<title>Xem thử phổi 3D — chưa áp dụng</title>
+<meta name="theme-color" content="#061a20">
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#e9f9f8;background:#071a20}body{background:radial-gradient(ellipse at 50% 15%,#183e43 0%,#06171f 70%)}
+.wrap{max-width:930px;margin:auto;padding:20px 15px 45px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.top h1{font-size:clamp(19px,4.4vw,29px);margin:2px 0}.top small{color:#83dbbc;letter-spacing:2px;font-weight:800;font-size:10px}.tag{border:1px solid #537d80;background:#15363d;color:#aef4d6;padding:9px 13px;border-radius:20px;font-size:11px}
+p{color:#bad3d4;line-height:1.55;font-size:13px;margin:8px 0 14px}
+.viewer{position:relative;height:min(76vh,665px);min-height:360px;border-radius:25px;overflow:hidden;border:1px solid #3b666a;background:radial-gradient(ellipse at 51% 43%,#275158b0,#0d262d 61%,#091f28);box-shadow:0 22px 65px #0009;touch-action:none;user-select:none}
+#scene{display:block;width:100%;height:100%;touch-action:none;outline:0}
+.viewer:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent,rgba(255,255,255,.018),transparent);pointer-events:none}
+.overlay-top{position:absolute;inset:14px 14px auto;display:flex;justify-content:space-between;gap:10px;pointer-events:none}
+.chip{background:#061b22db;border:1px solid #61858a99;border-radius:99px;padding:8px 11px;color:#d3fce9;font-size:11px;font-weight:700}
+.overlay-bottom{position:absolute;bottom:15px;left:0;right:0;text-align:center;color:#d6ededbb;font-size:11px;pointer-events:none;text-shadow:0 1px 4px #000}
+.controls{margin-top:16px;border:1px solid #386269;border-radius:20px;background:#112d35;padding:17px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.row strong{font-size:17px}
+button{border:1px solid #467b7e;border-radius:12px;background:#183b45;color:#d1f5ee;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation}
+button.active{background:#86efce;color:#09343a;border-color:#86efce}
+button:focus-visible,input:focus-visible{outline:2px solid #baffde;outline-offset:3px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.actions button{flex:1;min-width:100px}
+.range-box{margin:16px 0 8px}.range-box label{display:flex;justify-content:space-between;font-size:12px;color:#b6d4d5;margin-bottom:10px}
+input[type=range]{accent-color:#72edc5;width:100%;touch-action:pan-y}
+.timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;font-size:10px;color:#a5c9c8;text-align:center;margin-top:7px}
+.note{font-size:11px;color:#a5c3c4;line-height:1.6;margin:12px 2px}
+.stages{display:flex;gap:7px;overflow:auto;padding:4px 1px 10px;scroll-snap-type:x proximity}.stages button{flex:none;scroll-snap-align:start}
+.fallback{position:absolute;inset:25% 10%;display:none;place-content:center;text-align:center;background:#132f37ec;color:#ffe9dc;border-radius:20px;padding:20px}
+@media(max-width:580px){.wrap{padding:11px 9px 24px}.top h1{font-size:20px}.viewer{height:min(62vh,520px);min-height:345px}.controls{padding:13px}.overlay-top{inset:10px 8px auto}.chip{font-size:9px;padding:7px 9px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head>
+<body><main class="wrap">
+<div class="top"><div><small>PHIÊN BẢN THỬ NGHIỆM • CHƯA CÀI VÀO APP</small><h1>🫁 Xem thử lá phổi 3D</h1></div><span class="tag">Thử xoay 360°</span></div>
+<p>Chạm và kéo để xoay mọi hướng, dùng hai ngón để phóng to. Hai ảnh anh đã chọn được đặt trên mặt trước; mặt bên và sau được dựng thành khối 3D để xem thử.</p>
+<section class="viewer" id="viewer" aria-label="Mô hình phổi 3D xoay tương tác">
+<canvas id="scene"></canvas><div class="overlay-top"><span id="status" class="chip">● Đang chuẩn bị mô hình</span><span id="angleLabel" class="chip">Góc chính diện</span></div>
+<div class="overlay-bottom">↔ Kéo xoay · ↕ Kéo dọc · Chụm hai ngón phóng to</div><div class="fallback" id="fallback">Không tải được trình dựng hình 3D. Hãy mở bằng Safari hoặc Chrome và đảm bảo có Internet.</div>
+</section>
+<section class="controls">
+<div class="row"><strong id="stageTitle">Giai đoạn 1/24 · Bắt đầu</strong><span class="tag" id="stageAge">Ngày 0</span></div>
+<p id="stageDescription">Ảnh phổi tổn thương, cuống phổi và các nhánh mạch máu hiển thị chi tiết ở góc chính diện.</p>
+<div class="actions"><button id="badBtn" class="active">Phổi tổn thương</button><button id="goodBtn">Phổi khỏe</button><button id="resetBtn">↺ Chính diện</button><button id="spinBtn">⟳ Tự xoay</button></div>
+<div class="range-box"><label for="stageRange"><span>Chuyển đổi theo mốc cai thuốc (minh họa)</span><b id="progressText">0%</b></label><input type="range" id="stageRange" min="0" max="23" step="1" value="0"/><div class="timeline"><span>0 ngày</span><span>3 ngày</span><span>1 tuần</span><span>1 tháng</span><span>6 tháng</span><span>5 năm</span></div></div>
+<div class="stages" id="quickStages"></div>
+<p class="note">* Đây là bản xem thử hình khối với ảnh kết hợp mặt trước và mô hình dựng thủ công ở các góc khác, không phải bản quét y khoa 3D. Sự thay đổi từ phổi tổn thương sang phổi khỏe chỉ mang tính tượng trưng: tổn thương do hút thuốc không nhất thiết hồi phục hoàn toàn.</p>
+</section>
+</main>
+<script type="module">
+const $=id=>document.getElementById(id);
+const stageDays=[0,1,2,3,4,6,8,10,12,14,18,21,24,28,32,45,60,90,120,180,270,365,730,1825];
+const stageNames=['Bắt đầu','24 giờ','48 giờ','72 giờ','Ngày 4','Ngày 6','Ngày 8','Ngày 10','Ngày 12','2 tuần','Ngày 18','3 tuần','Ngày 24','4 tuần','Ngày 32','45 ngày','2 tháng','3 tháng','4 tháng','6 tháng','9 tháng','1 năm','2 năm','5 năm'];
+let THREE;
+try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js');}catch(e){$('fallback').style.display='grid';$('status').textContent='Lỗi tải thư viện';throw e}
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas:$('scene'),antialias:true,alpha:true,powerPreference:'high-performance'});}catch(e){$('fallback').style.display='grid';$('status').textContent='WebGL không khả dụng';throw e}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.45;
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(36,1,.1,100);
+camera.position.set(0,.0,12.9);
+scene.add(new THREE.HemisphereLight(0x9bf0ec,0x352029,2.2));
+const key=new THREE.DirectionalLight(0xffe2d6,3.8);key.position.set(-4,6,9);scene.add(key);
+const fill=new THREE.DirectionalLight(0x53bac8,2);fill.position.set(4,1,-7);scene.add(fill);
+const group=new THREE.Group();group.rotation.y=0;scene.add(group);
+const lungs=new THREE.Group();group.add(lungs);
+const tissue=[];
+function sculptLung(side){
+ const base=new THREE.SphereGeometry(1,86,64);
+ const p=base.attributes.position;
+ for(let i=0;i<p.count;i++){
+   let x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+   const height=(y+1)*.5;
+   // Broad lower lobes and narrow upper apex; medial indentation for heart.
+   let radius=(.61+.39*(1-height));
+   let centerShift=.11*(1-height);
+   let xx=x*radius*1.02;
+   const inner=Math.exp(-Math.pow((xx+side*.52)/.22,2)-Math.pow((y+.1)/.55,2));
+   xx+=side*(.05+centerShift)-side*.23*inner;
+   let yy=y*1.93+(.12*Math.sin(y*6.7+x*3.4));
+   let zz=z*(.72+height*.11);
+   const ridges=.012*Math.sin(x*16+y*13+z*9)+.011*Math.sin(x*31-y*26);
+   p.setXYZ(i,xx+ridges,yy,zz+ridges*.8);
+ }
+ base.computeVertexNormals();
+ // Vertex color has mottled shade but avoids looking like a featureless sphere.
+ const colors=new Float32Array(p.count*3),seeds=[];
+ for(let i=0;i<p.count;i++){
+   let x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+   const n=.5+.28*Math.sin(x*19+y*11+z*25)+.22*Math.sin(x*37-y*31+z*17);
+   const m=.52+.48*Math.sin(x*5+y*7+z*4);
+   seeds.push([n,m]);colors[i*3]=1;colors[i*3+1]=1;colors[i*3+2]=1;
+ }
+ base.setAttribute('color',new THREE.BufferAttribute(colors,3));
+ const mat=new THREE.MeshPhysicalMaterial({vertexColors:true,roughness:.49,metalness:0,clearcoat:.28,clearcoatRoughness:.61});
+ const mesh=new THREE.Mesh(base,mat);mesh.scale.set(1.2,1,1.12);mesh.position.set(side*1.34,-.15,-.1);mesh.rotation.z=side*.12;lungs.add(mesh);
+ tissue.push({base,seeds});
+}
+// Higher region has narrow lobes; two lower/upper masses united into one continuous lung.
+sculptLung(-1);sculptLung(1);
+const airwayMaterial=new THREE.MeshPhysicalMaterial({color:0xb9856a,roughness:.46,clearcoat:.35});
+const vesselMat=new THREE.MeshStandardMaterial({color:0xad565d,roughness:.55});
+const smallMat=new THREE.MeshStandardMaterial({color:0xb76f72,roughness:.6});
+function tube(points,radius,mat=airwayMaterial,segments=38){
+ const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
+ const mesh=new THREE.Mesh(new THREE.TubeGeometry(curve,segments,radius,8,false),mat);lungs.add(mesh);return mesh;
+}
+tube([[0,3.1,.23],[0,2.68,.24],[0,2.1,.25],[0,1.65,.23]],.18);
+for(let side of [-1,1]){
+ tube([[0,1.66,.27],[side*.35,1.32,.40],[side*.76,1.08,.48],[side*1.14,.8,.61]],.14);
+ for(let k=0;k<3;k++){
+  tube([[side*(.60+k*.14),1.09-k*.37,.53],[side*(1.15+k*.16),.7-k*.35,.71],[side*(1.75+k*.08),.20-k*.55,.79]],.064-k*.01,airwayMaterial,28);
+  tube([[side*(.92+k*.19),.65-k*.35,.72],[side*(1.3+k*.14),.15-k*.37,.79],[side*(1.72+k*.08),-.66-k*.23,.69]],.033,smallMat,24);
+ }
+ for(let k=0;k<9;k++){
+  const x=.91+(k%3)*.25,y=.82-Math.floor(k/3)*.54,z=.75;
+  tube([[side*.76,.76,.59],[side*x,y,z],[side*(x+.35),y-.20,z+.025]],.018,vesselMat,17);
+ }
+}
+// Detailed texture sheets are the exact selected images, laid on a curved front-facing surface.
+// At side/back, real 3D geometry is visible. This is deliberate preview hybrid, not true full photogrammetry.
+function curvedSheetGeometry(){
+ const geo=new THREE.BufferGeometry(),verts=[],uvs=[],indices=[],n=36;
+ for(let j=0;j<=n;j++){for(let i=0;i<=n;i++){
+  const u=i/n,v=j/n;
+  const x=(u-.5)*5.5,y=(.5-v)*6.75;
+  const z=1.16 - .16*Math.pow((u-.5)*2,2)+.12*Math.cos((v-.5)*Math.PI);
+  verts.push(x,y,z);uvs.push(u,1-v);
+ }}
+ for(let j=0;j<n;j++)for(let i=0;i<n;i++){let a=j*(n+1)+i,b=a+1,c=a+(n+1),d=c+1;indices.push(a,c,b,b,c,d)}
+ geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));geo.setIndex(indices);geo.computeVertexNormals();return geo;
+}
+const loader=new THREE.TextureLoader();
+const urls=['../lung-bad-v6.avif','../lung-good-v6.avif'];
+let textures=[];
+try{
+ textures=await Promise.all(urls.map(url=>new Promise((resolve,reject)=>loader.load(url,t=>{t.colorSpace=THREE.SRGBColorSpace;resolve(t)},undefined,reject))));
+ $('status').textContent='● Xoay 3D đã sẵn sàng';
+}catch(e){$('status').textContent='● Chỉ hiển thị khối 3D';console.error(e)}
+const photoMats=textures.map(t=>new THREE.MeshBasicMaterial({map:t,transparent:true,opacity:1,depthWrite:false,side:THREE.DoubleSide,alphaTest:.025}));
+const sheetGeo=curvedSheetGeometry();
+const photos=photoMats.map(mat=>{const m=new THREE.Mesh(sheetGeo,mat);m.renderOrder=3;group.add(m);return m;});
+if(photos.length)photos[1].material.opacity=0;
+let stage=0,targetMix=0,mix=0,yaw=0,pitch=0,zoom=12.9,autoSpin=false;
+function colorize(v){
+ for(const part of tissue){const a=part.base.attributes.color;
+ for(let i=0;i<a.count;i++){
+  const [n,m]=part.seeds[i];const dark=new THREE.Color(0x36262a).lerp(new THREE.Color(0x76504b),m*.4);
+  const good=new THREE.Color(0xe17470).lerp(new THREE.Color(0xf4b0a3),m*.4);
+  dark.lerp(good,v);
+  dark.multiplyScalar(.72+.3*n);
+  a.setXYZ(i,dark.r,dark.g,dark.b);
+ }a.needsUpdate=true;
+ }
+ airwayMaterial.color.set(0x986c4b).lerp(new THREE.Color(0xe7b59e),v);
+ vesselMat.color.set(0x4a272c).lerp(new THREE.Color(0xcc6b78),v);
+ smallMat.color.set(0x5b3d3b).lerp(new THREE.Color(0xdca8a0),v);
+}
+function stageSet(i){
+ stage=Math.max(0,Math.min(23,Number(i)||0));$('stageRange').value=String(stage);
+ targetMix=stage/23;
+ $('progressText').textContent=Math.round(targetMix*100)+'%';
+ $('stageTitle').textContent='Giai đoạn '+(stage+1)+'/24 · '+stageNames[stage];
+ $('stageAge').textContent='Ngày '+stageDays[stage];
+ $('stageDescription').textContent=stage===0?'Giai đoạn đầu: hình phổi tổn thương, phế quản và hệ mạch sẫm màu.':stage===23?'Hình phổi khỏe là mục tiêu trực quan để tạo động lực.':'Quan sát sự chuyển tiếp mang tính tượng trưng ở các mốc cai thuốc.';
+ $('badBtn').classList.toggle('active',stage===0);$('goodBtn').classList.toggle('active',stage===23);
+ document.querySelectorAll('.stages button').forEach(b=>b.classList.toggle('active',Number(b.dataset.index)===stage));
+}
+const marks=[0,1,2,3,4,6,9,13,17,21,23];
+for(let i of marks){const b=document.createElement('button');b.type='button';b.dataset.index=i;b.textContent=stageNames[i];b.addEventListener('click',()=>stageSet(i));$('quickStages').append(b)}
+$('stageRange').addEventListener('input',e=>stageSet(e.target.value));
+$('badBtn').addEventListener('click',()=>stageSet(0));$('goodBtn').addEventListener('click',()=>stageSet(23));
+$('resetBtn').addEventListener('click',()=>{yaw=0;pitch=0;zoom=12.9;autoSpin=false;$('spinBtn').classList.remove('active')});
+$('spinBtn').addEventListener('click',()=>{autoSpin=!autoSpin;$('spinBtn').classList.toggle('active',autoSpin)});
+stageSet(0);colorize(0);
+const canvas=$('scene'),pointers=new Map();let distance=0;
+canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);autoSpin=false;$('spinBtn').classList.remove('active')});
+canvas.addEventListener('pointermove',e=>{
+ if(!pointers.has(e.pointerId))return;
+ let prev=pointers.get(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pointers.size===1){yaw+=(e.clientX-prev[0])*.0075;pitch=Math.max(-1.0,Math.min(1.0,pitch+(e.clientY-prev[1])*.006));}
+ else if(pointers.size===2){const v=[...pointers.values()],d=Math.hypot(v[0][0]-v[1][0],v[0][1]-v[1][1]);if(distance>0)zoom=Math.max(7.8,Math.min(20,zoom*distance/d));distance=d;}
+});
+function release(e){pointers.delete(e.pointerId);if(pointers.size<2)distance=0}
+canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
+canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.min(20,Math.max(7.8,zoom+e.deltaY*.008))},{passive:false});
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+new ResizeObserver(resize).observe($('viewer'));resize();
+let last=performance.now();
+function loop(now){requestAnimationFrame(loop);const dt=Math.min(.05,(now-last)/1000);last=now;
+ if(autoSpin)yaw+=dt*.40;
+ mix+=(targetMix-mix)*Math.min(1,dt*5);
+ const front=Math.abs(Math.cos(yaw)),visible=Math.pow(Math.max(0,(front-.27)/.73),2.0);
+ // Hide the photo sheet on the back half to expose actual rear 3D geometry.
+ const facing=Math.cos(yaw)>0?visible:0;
+ if(photoMats.length){photoMats[0].opacity=(1-mix)*facing;photoMats[1].opacity=mix*facing;}
+ group.rotation.y=yaw;group.rotation.x=pitch;
+ const breath=1+.014*Math.sin(now*.0018);
+ lungs.scale.set(1+.018*Math.sin(now*.0018),1+.01*Math.sin(now*.0018),breath);
+ camera.position.z=zoom;
+ colorize(mix);
+ let d=Math.round((((yaw%(Math.PI*2))+Math.PI*2)%(Math.PI*2))*180/Math.PI);
+ $('angleLabel').textContent=d<30||d>330?'Góc chính diện':d>145&&d<215?'Góc phía sau':'Góc '+d+'°';
+ renderer.render(scene,camera);
+}requestAnimationFrame(loop);
+</script></body></html>
