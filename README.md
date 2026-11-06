@@ -11,3 +11,6 @@ Các tính năng cũ, tách dữ liệu riêng Nathan/Kieuquyen và bảng xếp
 
 ### Ảnh mới
 File `lung-healthy-v4.webp` là hình phổi nghệ thuật do AI tạo mới, thay cho ảnh hai lá phổi mờ; ứng dụng tự đổi lớp màu tối / sáng theo mốc. Ảnh tạo cảm giác nổi khối nhưng không phải mô hình 3D giải phẫu xoay 360°. Các mốc không phản ánh diễn biến làm sạch phổi thật.
+
+## V5 – ảnh chuẩn theo người dùng
+Asset `lung-reference-original.webp` được chuyển trực tiếp từ ảnh giải phẫu phổi **do người dùng cung cấp**. Màn hình dùng 2 lớp từ cùng 1 ảnh này nên không nhảy sang hình phổi SVG hoạt hình. Chuyển màu và chuyển động chỉ là minh họa; không phải mô hình giải phẫu 3D tương tác thực sự.

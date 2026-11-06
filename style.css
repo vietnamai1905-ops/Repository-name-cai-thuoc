@@ -102,3 +102,21 @@ main>.milestones-panel{order:6;min-width:0}
 .lung-photo-dark{filter:grayscale(.62) sepia(.35) saturate(.62) brightness(.42) contrast(1.42) drop-shadow(0 10px 15px #25171b77)!important}
 .lung-photo-healthy{filter:saturate(1.16) brightness(1.02) contrast(1.1) drop-shadow(0 10px 16px #a63c3b66)!important}
 .lung-photo{background:transparent!important}
+
+/* V5 photo fix: uploaded anatomical lung picture instead of inaccurate fallback drawing.
+   Two layers use the SAME image, so their silhouette and airways line up. */
+.lung-photo-layer{
+  background-image:url('lung-reference-original.webp?v=5')!important;
+  background-size:contain!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+}
+.lung-photo{background:#fff!important;overflow:hidden!important;}
+.lung-photo-dark{filter:grayscale(.24) sepia(.08) brightness(.64) saturate(.75) contrast(1.13) drop-shadow(0 10px 18px #5b242444)!important}
+.lung-photo-healthy{filter:saturate(1.07) brightness(1.03) contrast(1.06) drop-shadow(0 10px 18px #842e2e33)!important}
+.lung-photo.loaded ~ #lungIllustration{display:none!important;}
+#lungIllustration{display:none!important;}
+.lung-stage-v2{background:#fff!important;}
+@media(max-width:760px){
+  .lung-photo{height:100%!important;width:min(100%,395px)!important}
+}
