@@ -21,3 +21,56 @@
 .lung-step.active{background:#83e7c5;border-color:#83e7c5;color:#072c30;box-shadow:0 0 0 2px rgba(131,231,197,.14)}
 @media(prefers-reduced-motion:reduce){.breathing-lungs{animation:none}}
 @media(max-width:760px){.lung-stage-v2{height:330px!important;min-height:300px}#lungIllustration{max-height:320px}.lung-step{min-width:82px}}
+
+/* MOBILE FIRST V3: đồng hồ đầu, phổi tham khảo ngay kế tiếp. */
+main{display:flex!important;flex-direction:column!important;gap:12px!important;max-width:900px!important;align-items:stretch!important;}
+main>.dashboard{display:contents!important}
+.dashboard>.hero:first-child{order:1;min-width:0}
+main>.visual{order:2;min-width:0}
+.dashboard>.hero:nth-child(2){order:3}
+.dashboard>.milestone-next{order:4}
+.dashboard>.controls{order:5}
+main>.milestones-panel{order:6;min-width:0}
+.visual{min-height:0!important;padding:16px!important;}
+.visual-top{align-items:center}
+.visual-top h2{font-size:clamp(19px,4vw,27px);margin:5px 0 10px}
+.hero{padding:18px!important}
+.clock{font-size:clamp(30px,6.8vw,58px)!important;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;line-height:1.12}
+.hero .clock{margin:8px 0!important}
+.hero p{margin:4px 0;font-size:12px}
+.lung-stage-v2{height:clamp(235px,55vw,405px)!important;min-height:235px!important;background:#eff2f0!important;overflow:hidden!important;border-radius:18px!important;display:flex;align-items:center;justify-content:center}
+.lung-photo{position:absolute;inset:0;display:none;overflow:hidden;background:#f7f8f6}
+.lung-photo.loaded{display:block}
+.lung-photo.loaded~#lungIllustration{display:none}
+.lung-photo-layer{position:absolute;inset:0;background-repeat:no-repeat;background-image:url('lung-reference.webp?v=20261106');background-size:200% 100%;transform:scale(1.025);transform-origin:center;animation:photoBreath 5s ease-in-out infinite}
+.lung-photo-dark{background-position:0% center}
+.lung-photo-healthy{background-position:100% center;opacity:0;transition:opacity .7s ease}
+@keyframes photoBreath{0%,100%{transform:scale(1.025,1.015)}50%{transform:scale(1.045,1.036)}}
+.lung-stage-info{padding:10px 3px 4px}
+.lung-timeline{padding:5px 0 10px}
+.health-row{padding-top:10px;gap:12px}
+.health-pct{font-size:36px!important}
+.health-pct small{font-size:17px!important}
+.health-desc p{margin:5px 0}
+.breath{font-size:10px}
+@media(max-width:760px){
+ header{padding:10px 13px 5px!important;align-items:flex-start!important;flex-wrap:wrap!important}
+ header .brand{gap:7px}
+ header .brand .logo{width:30px;height:30px}
+ header h1{font-size:15px!important}
+ header small{font-size:8px!important}
+ .player-controls{gap:6px}
+ .player-controls .pill{padding:5px 9px;font-size:9px}
+ .player-controls a,.player-controls button{font-size:10px}
+ main{padding:8px 10px 25px!important}
+ .hero{padding:15px!important}
+ .visual{padding:12px!important}
+ .visual-top .breath{display:none}
+ .lung-stage-v2{height:clamp(210px,61vw,310px)!important;min-height:210px!important}
+ .lung-stage-info>b{font-size:16px}
+ .lung-stage-info p{font-size:11px}
+ .lung-step{min-width:75px;font-size:11px;padding:8px 6px}
+ .disclaimer{font-size:10px}
+ .clock{font-size:clamp(28px,8.1vw,44px)!important}
+}
+@media(prefers-reduced-motion:reduce){.lung-photo-layer{animation:none}}

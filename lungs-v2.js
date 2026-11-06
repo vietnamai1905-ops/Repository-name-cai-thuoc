@@ -31,6 +31,8 @@ const notes=[
 ];
 const svg=document.getElementById('lungIllustration');
 const timeline=document.getElementById('lungTimeline');
+const photo=document.getElementById('lungPhoto'), healthy=document.getElementById('lungPhotoHealthy');
+if(photo){const sample=new Image();sample.onload=()=>photo.classList.add('loaded');sample.onerror=()=>console.warn('Ảnh phổi không tải được, dùng hình dự phòng');sample.src='lung-reference.webp?v=20261106';}
 if(!svg||!timeline)return;
 const NS='http://www.w3.org/2000/svg';
 const left='M307 148 C275 119 225 118 192 137 C150 161 118 205 107 270 C91 361 114 448 164 464 C203 477 267 458 293 419 C309 391 307 346 305 302 L305 211 Z';
@@ -87,6 +89,8 @@ function render(index){
  const i=Math.max(0,Math.min(days.length-1,index));
  if(rendered===i)return;rendered=i;
  const t=i/(days.length-1);
+ if(healthy)healthy.style.opacity=String(Math.min(1,Math.pow(t,.72)));
+ if(photo)photo.style.setProperty('--lung-stage',String(i));
  const start=[65,48,54],end=[230,149,148];
  const mid=color(start,end,t);
  const light=color([103,75,80],[255,206,184],t);

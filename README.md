@@ -1,7 +1,7 @@
-# Tôi đã bỏ thuốc — V2 hành trình lá phổi
+# TÔI ĐÃ BỎ THUỐC — giao diện phổi tham khảo V3
 
-Trang cũ nâng cấp lên V2 với **24 giai đoạn minh họa phổi**, gồm 0, 1, 2, 3, 4, 6, 8, 10, 12, 14 ngày..., cho phép bấm timeline để xem, quay lại hiện tại. Không dùng WebGL hay CDN cho mô hình, vì vậy sẽ tải nhanh hơn.
+Trên điện thoại: đồng hồ hành trình đặt đầu trang; tiếp đến là hình phổi minh họa, rồi đồng hồ không hút liên tục, các mốc, cài đặt, thống kê.
 
-**Lưu ý y khoa**: Đây là hình minh họa tạo động lực. Màu sắc/đốm trên phổi KHÔNG phản ánh tiến triển thực tế hoặc chẩn đoán; các tổn thương có thể không hồi phục. Mốc sức khỏe là thông tin tham khảo.
+Sử dụng **ảnh tham khảo của người dùng** (file `lung-reference.webp`): hai mô hình phổi của người hút thuốc và phổi khỏe mạnh. Trạng thái giữa hai ảnh được **pha trộn theo 24 mốc mang tính biểu tượng**, không phải mô phỏng quá trình hồi phục thật.
 
-Dữ liệu vẫn dùng `caiThuocDataV1_nathan`, `caiThuocDataV1_hoangtu`. Bảng xếp hạng cũ vẫn dùng Supabase. Bản trước được lưu tại nhánh `backup-before-lung-v2-20261106`.
+Các tính năng cũ, tách dữ liệu riêng Nathan/Kieuquyen và bảng xếp hạng giữ nguyên. Dữ liệu `localStorage` không bị xóa. Ảnh gốc độ phân giải cao có thể thay thế asset `lung-reference.webp` mà không phải sửa code.
