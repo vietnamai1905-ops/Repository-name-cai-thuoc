@@ -96,3 +96,9 @@ main>.milestones-panel{order:6;min-width:0}
 .lung-step.active{box-shadow:0 0 0 2px #88e8cb44,0 4px 16px #88e8cb21}
 @media(max-width:760px){.lung-stage-v2{height:clamp(270px,77vw,395px)!important;min-height:270px!important}.lung-photo{width:min(100%,395px)!important}.lung-live-v4,.lung-level-v4{font-size:9px;padding:5px 7px}}
 @media(prefers-reduced-motion:reduce){.lung-photo-layer,.lung-tissue-light{animation:none!important}}
+
+/* V4 high-detail new lung asset — not the old two-up low-res photograph */
+.lung-photo-layer{background-image:url('lung-healthy-v4.webp?v=1')!important;background-size:contain!important;background-position:center center!important;background-repeat:no-repeat!important}
+.lung-photo-dark{filter:grayscale(.62) sepia(.35) saturate(.62) brightness(.42) contrast(1.42) drop-shadow(0 10px 15px #25171b77)!important}
+.lung-photo-healthy{filter:saturate(1.16) brightness(1.02) contrast(1.1) drop-shadow(0 10px 16px #a63c3b66)!important}
+.lung-photo{background:transparent!important}

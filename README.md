@@ -8,3 +8,6 @@ Các tính năng cũ, tách dữ liệu riêng Nathan/Kieuquyen và bảng xếp
 
 ## V4
 Đã thêm hiệu ứng hô hấp riêng cho hình phổi, phản quang, độ sâu giả lập, kéo ngón tay để nghiêng mô hình trên điện thoại, và hiển thị mốc 1–24. Các chức năng theo dõi và bộ nhớ dữ liệu không thay đổi. Hình ảnh là minh họa động lực, không phải biểu đồ hồi phục y khoa.
+
+### Ảnh mới
+File `lung-healthy-v4.webp` là hình phổi nghệ thuật do AI tạo mới, thay cho ảnh hai lá phổi mờ; ứng dụng tự đổi lớp màu tối / sáng theo mốc. Ảnh tạo cảm giác nổi khối nhưng không phải mô hình 3D giải phẫu xoay 360°. Các mốc không phản ánh diễn biến làm sạch phổi thật.
