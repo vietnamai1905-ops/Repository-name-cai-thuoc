@@ -115,7 +115,6 @@ main>.milestones-panel{order:6;min-width:0}
 .lung-photo-dark{filter:grayscale(.24) sepia(.08) brightness(.64) saturate(.75) contrast(1.13) drop-shadow(0 10px 18px #5b242444)!important}
 .lung-photo-healthy{filter:saturate(1.07) brightness(1.03) contrast(1.06) drop-shadow(0 10px 18px #842e2e33)!important}
 .lung-photo.loaded ~ #lungIllustration{display:none!important;}
-#lungIllustration{display:none!important;}
 .lung-stage-v2{background:#fff!important;}
 @media(max-width:760px){
   .lung-photo{height:100%!important;width:min(100%,395px)!important}
