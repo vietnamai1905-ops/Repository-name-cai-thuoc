@@ -54,11 +54,15 @@ if (Keychain.contains(KEY) && goodDate(Keychain.get(KEY))) {
   const days = Math.floor(sec/86400);
   const hours = Math.floor((sec%86400)/3600);
   const minutes = Math.floor((sec%3600)/60);
-  const big=w.addText(days+" NGÀY");
-  big.font=Font.boldSystemFont(32);big.textColor=gold;big.minimumScaleFactor=.5;big.lineLimit=1;
-  w.addSpacer(4);
-  const detail=w.addText(hours+" giờ  "+minutes+" phút không hút");
-  detail.font=Font.mediumSystemFont(13);detail.textColor=white;detail.lineLimit=1;detail.minimumScaleFactor=.7;
+  // WidgetDate.applyTimerStyle() được iOS cập nhật độc lập với lịch chạy script.
+  // Bộ đếm từ một thời điểm trong quá khứ tăng lên theo thời gian thực.
+  const live=w.addDate(start);
+  live.applyTimerStyle();
+  live.font=Font.boldMonospacedSystemFont(28);
+  live.textColor=gold;live.lineLimit=1;live.minimumScaleFactor=.55;
+  w.addSpacer(5);
+  const detail=w.addText("KHÔNG HÚT LIÊN TỤC");
+  detail.font=Font.mediumSystemFont(11);detail.textColor=white;detail.lineLimit=1;detail.minimumScaleFactor=.7;
   w.addSpacer();
   // Cột mốc thực theo chuỗi thời gian của app, không tự động coi mỗi ngày là một mốc.
   const milestones=[
