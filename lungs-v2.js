@@ -60,29 +60,25 @@
  }
  days.forEach((d,i)=>{
    const button=document.createElement('button');button.type='button';button.className='lung-step';button.textContent=labels[i];
-   button.addEventListener('click',()=>{preview=i;last=-1;updateStage(i);reset.hidden=false});
+   button.addEventListener('click',()=>{preview=i;last=-1;updateStage(i);renderFirst72(days[i]*24);reset.hidden=false});
    timeline.appendChild(button);
  });
- reset.addEventListener('click',()=>{preview=-1;last=-1;updateStage(stageAt(day));reset.hidden=true});
+ reset.addEventListener('click',()=>{preview=-1;last=-1;updateStage(stageAt(day));renderFirst72(day*24);reset.hidden=true});
  // 30 symbolic frames over the first 72h; one fixed base silhouette, step by step.
  function renderFirst72(hours) {
    const clamped=Math.max(0,Math.min(72,hours));
    const frame=Math.min(30,Math.floor(clamped/72*29)+1);
    const progress=(frame-1)/29;
    const inFirst72=hours<=72;
-   stage.classList.toggle('first-72',inFirst72);
-   if(inFirst72){
+   stage.classList.add('first-72');
+   {
      photo.style.setProperty('--early-bright',(1+progress*.50).toFixed(3));
      photo.style.setProperty('--early-saturate',(0.8+progress*.5).toFixed(3));
      photo.style.setProperty('--early-redblend',String((progress*.94).toFixed(3)));
-     if(level)level.textContent='Hình thái '+frame+'/30 · 72 giờ đầu';
-     if(title)title.textContent='72 giờ đầu · Hình thái '+frame+'/30';
-     if(note)note.textContent='Minh họa nghệ thuật tiến trình cai thuốc: '+Math.floor(clamped)+' / 72 giờ. Sự đổi màu không phản ánh phổi hồi phục thực tế.';
-     if(previewLabel)previewLabel.textContent='Đang xem: '+(frame===30?'72 giờ':Math.floor(clamped)+' giờ');
-   } else {
-     photo.style.removeProperty('--early-bright');
-     photo.style.removeProperty('--early-saturate');
-     photo.style.removeProperty('--early-redblend');
+     if(inFirst72 && level)level.textContent='Hình thái '+frame+'/30 · 72 giờ đầu';
+     if(inFirst72 && title)title.textContent='72 giờ đầu · Hình thái '+frame+'/30';
+     if(inFirst72 && note)note.textContent='Minh họa nghệ thuật tiến trình cai thuốc: '+Math.floor(clamped)+' / 72 giờ. Sự đổi màu không phản ánh phổi hồi phục thực tế.';
+     if(inFirst72 && previewLabel)previewLabel.textContent='Đang xem: '+(frame===30?'72 giờ':Math.floor(clamped)+' giờ');
    }
  }
  window.setLungProgress=hours=>{
