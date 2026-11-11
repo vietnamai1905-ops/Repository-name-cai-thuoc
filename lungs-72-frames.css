@@ -1,61 +1,24 @@
-/* V8: cinematic video frame presentation, no white rectangle.
-   Keep original frame pixels; do not enlarge past native 636px width. */
-#lungStage.lung-stage-v2 {
- background:radial-gradient(ellipse at 50% 35%,#526a70 0%,#233e49 58%,#10262f 100%)!important;
- border:1px solid #496d71!important;
- box-shadow:inset 0 0 28px #071a2299,0 10px 28px #0003!important;
-}
-#lungStage .lung-photo {
- width:min(100%,636px)!important;
- max-width:636px!important;
- height:100%!important;
- filter:none!important;
- overflow:hidden!important;
-}
-#lungStage .lung-photo-layer {
- background-size:contain!important;
- background-position:center!important;
- background-repeat:no-repeat!important;
- image-rendering:auto!important;
- /* Multiply blends the light backdrop into the muted teal stage,
-    without using a hue-changing filter on the anatomical details. */
- mix-blend-mode:multiply!important;
- animation:videoLungBreathV8 4.2s ease-in-out infinite!important;
- transform-origin:50% 55%!important;
- backface-visibility:hidden;
-}
+/* Color-safe 72-hour visualization (2026-11-11).
+   Use original anatomical images with no tint/filter. Both remain aligned.
+   JS controls crossfade opacity continuously, including beyond 72h. */
 #lungStage .lung-photo-dark {
- background-image:url('phoi_01.webp');
- opacity:1!important;
+  background-image:url('lung-bad-v6.avif?v=hd800')!important;
+  filter:none!important;
+  opacity:1!important;
 }
 #lungStage .lung-photo-healthy {
- background-image:url('phoi_01.webp');
- opacity:0;
- transition:opacity .75s ease-in-out!important;
+  background-image:url('lung-good-v6.avif?v=hd800')!important;
+  filter:none!important;
+  /* Opacity intentionally set by JavaScript; never force it in CSS. */
+  transition:opacity 1s ease-in-out!important;
 }
-#lungStage .lung-depth-glint {display:none!important}
-#lungStage .lung-ui-v4 {z-index:5}
-@keyframes videoLungBreathV8 {
- 0%,100%{transform:translateY(2px) scale(0.985)}
- 48%,56%{transform:translateY(-3px) scale(1.035)}
-}
-@media(max-width:760px) {
- #lungStage .lung-photo{width:100%!important}
- #lungStage .lung-photo-layer{background-size:contain!important}
-}
-@media(prefers-reduced-motion:reduce) {
- #lungStage .lung-photo-layer{animation:none!important}
- #lungStage .lung-photo-healthy{transition:none!important}
-}
-
-/* V9: white is baked into each source frame. Tint the white image
-   backdrop to match the stage, without touching app background. */
 #lungStage .lung-photo-layer {
- background-color:#294c56!important;
- background-blend-mode:multiply!important;
- mix-blend-mode:multiply!important;
+  background-size:contain!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
 }
-#lungStage .lung-photo {
- background:#294c56!important;
- isolation:isolate!important;
+#lungStage .lung-depth-glint {opacity:.12;mix-blend-mode:normal}
+@media(prefers-reduced-motion:reduce) {
+ #lungStage .lung-photo-layer {animation:none!important}
+ #lungStage .lung-photo-healthy {transition:none!important}
 }
