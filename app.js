@@ -1,15 +1,21 @@
 'use strict';
-// Giữ nguyên key và schema của ứng dụng GitHub cũ.
+// Khởi động dữ liệu mới (V2): không nhập lại lịch sử V1.
 const PLAYER=/^(hoangtu|kieuquyen)$/i.test(new URLSearchParams(location.search).get('player')||'')?'hoangtu':'nathan';
 const PLAYER_NAME=PLAYER==='hoangtu'?'Kieuquyen':'Nathan';
-const KEY='caiThuocDataV1_'+PLAYER;
-const LEGACY_KEY='toiDaBoThuocDataV1';
+const KEY='caiThuocDataV2_'+PLAYER;
+const OLD_KEYS=['caiThuocDataV1_nathan','caiThuocDataV1_hoangtu','toiDaBoThuocDataV1'];
+// Dọn khóa cũ một lần trên từng trình duyệt; không đụng dữ liệu V2.
+try { OLD_KEYS.forEach(key=>localStorage.removeItem(key)); } catch(e) {}
 const MILESTONES=[
 [1/6,'10 phút · Khởi hành','Quyết định đã bắt đầu. Việc duy nhất cần làm là không hút ngay lúc này.'],[1/3,'20 phút · Nhịp tim','Nhịp tim bắt đầu giảm về mức bình thường hơn.'],[.5,'30 phút · Nửa giờ','Cơn thèm đến rồi sẽ đi.'],[1,'1 giờ · Giờ đầu tiên','Một giờ anh đã tự quyết định thay vì để điếu thuốc quyết định.'],[2,'2 giờ · Giữ trận','Chỉ cần giữ thêm đến mốc tiếp theo.'],[4,'4 giờ · Bốn giờ','Một khoảng thời gian đáng kể đã trôi qua mà không cần một điếu nào.'],[6,'6 giờ · Kiên định','Cảm giác thiếu thuốc không phải mệnh lệnh.'],[8,'8 giờ · Oxy hồi phục','Carbon monoxide giảm đáng kể và oxy trong máu phục hồi.'],[10,'10 giờ · Tiến lên','Mục tiêu 12 giờ đã ở rất gần.'],[12,'12 giờ · Nửa ngày','Carbon monoxide tiếp tục được loại khỏi cơ thể.'],[15,'15 giờ · Không quay đầu','Cơn thèm có thể khó chịu, nhưng sẽ qua.'],[18,'18 giờ · Gần một ngày','Chỉ còn 6 giờ tới cột mốc 24 giờ.'],[21,'21 giờ · Ba giờ nữa','Đừng đổi 21 giờ đã tích lũy lấy vài phút hút thuốc.'],[24,'1 ngày · Một ngày','Nicotine trong máu đã giảm về 0.'],[30,'30 giờ · Ngày thứ hai','Não vẫn có thể đòi thói quen cũ.'],[36,'36 giờ · Nửa đường tới 72h','Một ngày rưỡi. Tiếp tục tích lũy từng giờ.'],[42,'42 giờ · Giữ vững','Mỗi lần vượt cơn thèm là một lần luyện phản ứng mới.'],[48,'48 giờ · Hai ngày','Vị giác và khứu giác bắt đầu cải thiện.'],[54,'54 giờ · Còn 18 giờ','Mốc 72 giờ đang rất gần.'],[60,'60 giờ · Hai ngày rưỡi','Chỉ cần thêm 12 giờ.'],[66,'66 giờ · Sáu giờ cuối','Đang tiến qua giai đoạn triệu chứng cai thường mạnh nhất.'],[72,'72 giờ · Ba ngày','Ống phế quản bắt đầu giãn; việc thở có thể dễ hơn.'],[96,'4 ngày · Ngày thứ tư','Đừng để một khoảnh khắc thèm thuốc xóa thành quả.'],[120,'5 ngày · 120 giờ','Anh đã trải qua 120 giờ không hút thuốc.'],[144,'6 ngày · Sắp tròn tuần','Chỉ còn một ngày đến huy chương một tuần.'],[168,'1 tuần · Tuần đầu','Một tuần hoàn chỉnh.'],[240,'10 ngày · Hai chữ số','Từ một ngày thành mười ngày.'],[336,'2 tuần · Hai tuần','Tuần hoàn bắt đầu cải thiện trong những tuần đầu.'],[432,'18 ngày · Giữ thành quả','Những thói quen không thuốc tiếp tục được củng cố.'],[504,'3 tuần · Ba tuần','Ba tuần không thuốc.'],[672,'28 ngày · Bốn tuần','Triệu chứng cai nicotine thường đã giảm đáng kể.'],[720,'1 tháng · Một tháng','Ho và khó thở có thể bắt đầu giảm.'],[1080,'45 ngày · Một tháng rưỡi','Thời gian không hút được tính bằng tháng.'],[1440,'2 tháng · Hai tháng','Tiếp tục củng cố cuộc sống không thuốc.'],[2160,'3 tháng · Ba tháng','Tuần hoàn và chức năng phổi có thể cải thiện.'],[4320,'6 tháng · Nửa năm','Ho, khò khè và hô hấp có thể tiếp tục cải thiện.'],[6480,'9 tháng · Chín tháng','Một chặng đường dài không thuốc.'],[8760,'1 năm · Một năm','Nguy cơ đau tim giảm so với tiếp tục hút thuốc.'],[17520,'2 năm · Hai năm','Nguy cơ tim mạch tiếp tục giảm.'],[43800,'5 năm · Năm năm','Nguy cơ đột quỵ và một số ung thư tiếp tục giảm.'],[87600,'10 năm · Mười năm','Nguy cơ tử vong do ung thư phổi giảm so với tiếp tục hút.'],[131400,'15 năm · Mười lăm năm','Nguy cơ bệnh mạch vành tiến gần mức người không hút.'],[175200,'20 năm · Hai mươi năm','Nhiều nguy cơ liên quan thuốc lá giảm theo thời gian.']
 ];
 const ADVICE=['Cơn thèm sẽ qua. Đổi chỗ, uống nước và chờ thêm vài phút.','Thử thở chậm và đi bộ ngắn.','Viết ra điều làm mình muốn hút: nhận ra tác nhân sẽ giúp ứng phó.','Không cần thắng cả đời trong hôm nay. Chỉ cần vượt qua phút này.'];
 const $=id=>document.getElementById(id); const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let data={started:null,last:null,lapses:[],craps:[]};try{const saved=JSON.parse(localStorage.getItem(KEY)||(PLAYER==='nathan'?localStorage.getItem(LEGACY_KEY):null));if(saved&&typeof saved==='object')data={...data,...saved}}catch(e){}
+let data={started:null,last:null,lapses:[],craps:[]};
+try {
+ const saved=JSON.parse(localStorage.getItem(KEY));
+ if(saved&&typeof saved==='object')data={...data,...saved};
+} catch(e) {}
 function save(){localStorage.setItem(KEY,JSON.stringify(data))}
 const pad=n=>String(n).padStart(2,'0');
 function duration(s){s=Math.max(0,Math.floor(s));const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;return `${d?d+' ngày ':''}${pad(h)}:${pad(Math.floor(s/60))}:${pad(s%60)}`}
