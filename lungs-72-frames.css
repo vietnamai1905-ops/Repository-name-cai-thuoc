@@ -1,24 +1,49 @@
-/* 30 original video frames. Preserve pixel colors on iPhone Safari. */
-#lungStage {background:#e9e9e9!important}
-#lungStage .lung-photo {width:100%!important;max-width:100%!important;filter:none!important}
+/* V8: cinematic video frame presentation, no white rectangle.
+   Keep original frame pixels; do not enlarge past native 636px width. */
+#lungStage.lung-stage-v2 {
+ background:radial-gradient(ellipse at 50% 35%,#526a70 0%,#233e49 58%,#10262f 100%)!important;
+ border:1px solid #496d71!important;
+ box-shadow:inset 0 0 28px #071a2299,0 10px 28px #0003!important;
+}
+#lungStage .lung-photo {
+ width:min(100%,636px)!important;
+ max-width:636px!important;
+ height:100%!important;
+ filter:none!important;
+ overflow:hidden!important;
+}
 #lungStage .lung-photo-layer {
  background-size:contain!important;
  background-position:center!important;
  background-repeat:no-repeat!important;
- filter:none!important;
- animation:videoLungBreath 5.2s ease-in-out infinite!important;
+ image-rendering:auto!important;
+ /* Multiply blends the light backdrop into the muted teal stage,
+    without using a hue-changing filter on the anatomical details. */
+ mix-blend-mode:multiply!important;
+ animation:videoLungBreathV8 4.2s ease-in-out infinite!important;
+ transform-origin:50% 55%!important;
+ backface-visibility:hidden;
 }
-#lungStage .lung-photo-dark {background-image:url('phoi_01.webp');opacity:1!important}
+#lungStage .lung-photo-dark {
+ background-image:url('phoi_01.webp');
+ opacity:1!important;
+}
 #lungStage .lung-photo-healthy {
  background-image:url('phoi_01.webp');
  opacity:0;
- transition:opacity .6s ease-in-out!important;
+ transition:opacity .75s ease-in-out!important;
 }
 #lungStage .lung-depth-glint {display:none!important}
-@keyframes videoLungBreath {
- 0%,100%{transform:scale(1)}
- 50%{transform:scale(1.012)}
+#lungStage .lung-ui-v4 {z-index:5}
+@keyframes videoLungBreathV8 {
+ 0%,100%{transform:translateY(2px) scale(0.985)}
+ 48%,56%{transform:translateY(-3px) scale(1.035)}
 }
-@media(prefers-reduced-motion:reduce){
- #lungStage .lung-photo-layer{animation:none!important;transition:none!important}
+@media(max-width:760px) {
+ #lungStage .lung-photo{width:100%!important}
+ #lungStage .lung-photo-layer{background-size:contain!important}
+}
+@media(prefers-reduced-motion:reduce) {
+ #lungStage .lung-photo-layer{animation:none!important}
+ #lungStage .lung-photo-healthy{transition:none!important}
 }
