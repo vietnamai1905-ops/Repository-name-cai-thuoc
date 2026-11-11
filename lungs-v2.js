@@ -64,22 +64,24 @@
    timeline.appendChild(button);
  });
  reset.addEventListener('click',()=>{preview=-1;last=-1;updateStage(stageAt(day));renderFirst72(day*24);reset.hidden=true});
- // 30 symbolic frames over the first 72h; one fixed base silhouette, step by step.
+ // Continuous, color-safe crossfade between two original images.
+ // No hue-rotation, sepia, or forced brightness: these caused false colors on iOS.
  function renderFirst72(hours) {
-   const clamped=Math.max(0,Math.min(72,hours));
-   const frame=Math.min(30,Math.floor(clamped/72*29)+1);
-   const progress=(frame-1)/29;
-   const inFirst72=hours<=72;
-   stage.classList.add('first-72');
-   {
-     photo.style.setProperty('--early-bright',(1+progress*.50).toFixed(3));
-     photo.style.setProperty('--early-saturate',(0.8+progress*.5).toFixed(3));
-     photo.style.setProperty('--early-redblend',String((progress*.94).toFixed(3)));
-     if(inFirst72 && level)level.textContent='Hình thái '+frame+'/30 · 72 giờ đầu';
-     if(inFirst72 && title)title.textContent='72 giờ đầu · Hình thái '+frame+'/30';
-     if(inFirst72 && note)note.textContent='Minh họa nghệ thuật tiến trình cai thuốc: '+Math.floor(clamped)+' / 72 giờ. Sự đổi màu không phản ánh phổi hồi phục thực tế.';
-     if(inFirst72 && previewLabel)previewLabel.textContent='Đang xem: '+(frame===30?'72 giờ':Math.floor(clamped)+' giờ');
-   }
+   const h=Math.max(0,Number(hours)||0);
+   const clamped=Math.min(72,h);
+   const progress=clamped/72;
+   const frame=Math.min(30,Math.floor(progress*29)+1);
+   const inFirst72=h<=72;
+   stage.classList.toggle('first-72',inFirst72);
+   // At 72h the symbolic illustration is visibly lighter, then continues
+   // gradually through later stages. This is NOT physiological recovery.
+   const laterStage=stageAt(h/24);
+   const blend=inFirst72 ? .58*progress : .58+.42*Math.pow(Math.max(0,(laterStage-3)/20),.85);
+   healthy.style.opacity=String(Math.min(1,Math.max(0,blend)));
+   if(inFirst72 && level)level.textContent='Hình thái '+frame+'/30 · 72 giờ đầu';
+   if(inFirst72 && title)title.textContent='72 giờ đầu · Hình thái '+frame+'/30';
+   if(inFirst72 && note)note.textContent='Minh họa nghệ thuật: '+Math.floor(clamped)+' / 72 giờ không thuốc. Màu phổi không phản ánh phục hồi thực tế.';
+   if(inFirst72 && previewLabel)previewLabel.textContent='Đang xem: '+(frame===30?'72 giờ':Math.floor(clamped)+' giờ');
  }
  window.setLungProgress=hours=>{
    const currentHours=Math.max(0,Number(hours)||0);
