@@ -60,8 +60,27 @@ if (Keychain.contains(KEY) && goodDate(Keychain.get(KEY))) {
   const detail=w.addText(hours+" giờ  "+minutes+" phút không hút");
   detail.font=Font.mediumSystemFont(13);detail.textColor=white;detail.lineLimit=1;detail.minimumScaleFactor=.7;
   w.addSpacer();
-  const next=w.addText("Mốc tiếp: "+(days+1)+" ngày");
+  // Cột mốc thực theo chuỗi thời gian của app, không tự động coi mỗi ngày là một mốc.
+  const milestones=[
+    [10/60,"10 phút"],[20/60,"20 phút"],[.5,"30 phút"],[1,"1 giờ"],
+    [2,"2 giờ"],[4,"4 giờ"],[6,"6 giờ"],[8,"8 giờ"],
+    [10,"10 giờ"],[12,"12 giờ"],[15,"15 giờ"],[18,"18 giờ"],
+    [21,"21 giờ"],[24,"1 ngày"],[30,"30 giờ"],[36,"36 giờ"],
+    [42,"42 giờ"],[48,"2 ngày"],[54,"54 giờ"],[60,"60 giờ"],
+    [66,"66 giờ"],[72,"3 ngày"],[96,"4 ngày"],[120,"5 ngày"],
+    [144,"6 ngày"],[168,"1 tuần"],[240,"10 ngày"],[336,"2 tuần"],
+    [432,"18 ngày"],[504,"3 tuần"],[672,"28 ngày"],[720,"1 tháng"],
+    [1080,"45 ngày"],[1440,"2 tháng"],[2160,"3 tháng"],
+    [4320,"6 tháng"],[6480,"9 tháng"],[8760,"1 năm"],
+    [17520,"2 năm"],[43800,"5 năm"],[87600,"10 năm"],[131400,"15 năm"]
+  ];
+  const nextMilestone=milestones.find(m=>m[0]*3600>sec);
+  const nextText=nextMilestone
+    ? "Mốc kế tiếp: "+nextMilestone[1]
+    : "Tiếp tục hành trình không thuốc";
+  const next=w.addText(nextText);
   next.font=Font.mediumSystemFont(11);next.textColor=mint;
+  next.lineLimit=1;next.minimumScaleFactor=.7;
   w.refreshAfterDate=new Date(Date.now()+15*60*1000);
 } else {
   const message=w.addText("Chưa cài đặt mốc cai thuốc");
