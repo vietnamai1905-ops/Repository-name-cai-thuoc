@@ -1,0 +1,15 @@
+/* 30-step 72-hour motivational lung visualization.
+   Uses one anatomical silhouette for consistent geometry. */
+#lungStage.first-72 .lung-photo-dark {
+ filter:brightness(var(--early-bright,1)) saturate(var(--early-saturate,.8)) contrast(1.12)!important;
+}
+#lungStage.first-72 .lung-photo-healthy {
+ background-image:url('lung-bad-v6.avif?v=hd800')!important;
+ filter:sepia(1) saturate(2.6) hue-rotate(301deg) brightness(1.7) contrast(1.02)!important;
+ opacity:var(--early-redblend,0)!important;
+}
+#lungStage.first-72 .lung-photo-layer { background-position:center!important;background-size:contain!important; }
+#lungStage.first-72 .lung-level-v4 {background:rgba(9,47,45,.87);color:#d8fff0}
+@media(prefers-reduced-motion:reduce) {
+ #lungStage.first-72 .lung-photo-layer {animation:none!important}
+}
