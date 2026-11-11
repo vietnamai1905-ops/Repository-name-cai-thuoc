@@ -64,10 +64,34 @@
    timeline.appendChild(button);
  });
  reset.addEventListener('click',()=>{preview=-1;last=-1;updateStage(stageAt(day));reset.hidden=true});
+ // 30 symbolic frames over the first 72h; one fixed base silhouette, step by step.
+ function renderFirst72(hours) {
+   const clamped=Math.max(0,Math.min(72,hours));
+   const frame=Math.min(30,Math.floor(clamped/72*29)+1);
+   const progress=(frame-1)/29;
+   const inFirst72=hours<=72;
+   stage.classList.toggle('first-72',inFirst72);
+   if(inFirst72){
+     photo.style.setProperty('--early-bright',(1+progress*.50).toFixed(3));
+     photo.style.setProperty('--early-saturate',(0.8+progress*.5).toFixed(3));
+     photo.style.setProperty('--early-redblend',String((progress*.94).toFixed(3)));
+     if(level)level.textContent='Hình thái '+frame+'/30 · 72 giờ đầu';
+     if(title)title.textContent='72 giờ đầu · Hình thái '+frame+'/30';
+     if(note)note.textContent='Minh họa nghệ thuật tiến trình cai thuốc: '+Math.floor(clamped)+' / 72 giờ. Sự đổi màu không phản ánh phổi hồi phục thực tế.';
+     if(previewLabel)previewLabel.textContent='Đang xem: '+(frame===30?'72 giờ':Math.floor(clamped)+' giờ');
+   } else {
+     photo.style.removeProperty('--early-bright');
+     photo.style.removeProperty('--early-saturate');
+     photo.style.removeProperty('--early-redblend');
+   }
+ }
  window.setLungProgress=hours=>{
-   day=Math.max(0,Number(hours)||0)/24;
+   const currentHours=Math.max(0,Number(hours)||0);
+   day=currentHours/24;
    actual.textContent='Hiện tại: '+(day<1?'Mới bắt đầu':Math.floor(day)+' ngày')+' không hút liên tục';
-   updateStage(preview>=0?preview:stageAt(day));
+   const index=preview>=0?preview:stageAt(day);
+   updateStage(index);
+   renderFirst72(preview>=0?days[preview]*24:currentHours);
  };
  window.setLungProgress(0);
  let dragging=false,startX=0,startY=0;
