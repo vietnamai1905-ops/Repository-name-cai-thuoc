@@ -93,3 +93,43 @@ footer {color:#d5e3df;text-shadow:0 2px 8px #000;}
 @media (prefers-reduced-transparency:reduce) {
   .glass { background:rgba(10,31,39,.91)!important; backdrop-filter:none; -webkit-backdrop-filter:none; }
 }
+
+
+/* 11/11/2026: Nền cao hơn, trong hơn và bảng màu theo mẫu Hành trình cai thuốc.
+   Chỉ ảnh hưởng giao diện; dữ liệu và các mốc đếm giữ nguyên. */
+:root {
+  --ink:#fffaf2;
+  --muted:#e0e3e1;
+  --mint:#a4e6d8;
+  --line:rgba(222,240,241,.40);
+}
+body::before {
+  background-position:center top!important;
+}
+body::after {
+  background:linear-gradient(180deg,rgba(5,16,24,.20) 0%,rgba(6,20,28,.11) 42%,rgba(4,16,24,.39) 100%)!important;
+}
+header {
+  background:rgba(13,28,40,.20)!important;
+  padding-top:15px!important;
+  padding-bottom:10px!important;
+}
+header small,.eyebrow,.lung-view-meta {color:#a3e4d7!important;}
+h1,h2,.visual-top h2,.section-heading h2 {color:#fffaf6!important;}
+h1 em {color:#a2eddb!important;}
+.glass {
+  background:linear-gradient(145deg,rgba(24,33,44,.43),rgba(23,33,42,.31))!important;
+  border-color:rgba(219,234,235,.40)!important;
+  -webkit-backdrop-filter:blur(10px) saturate(115%)!important;
+  backdrop-filter:blur(10px) saturate(115%)!important;
+}
+.clock,.clock.medium,.milestone-next h3,.lung-stage-info>b {color:#ffd793!important;}
+.clock.green,.health-pct {color:#99efda!important;}
+.hero p,.milestone-next p,.health-desc p,.milestone p,.disclaimer {color:#e4e6e3!important;}
+.track>div {background:linear-gradient(90deg,#f5c47e,#f9d89a)!important;}
+.lung-step.active {background:#a4e6d8!important;color:#10262e!important;}
+@media (max-width:760px) {
+  body::before {background-position:center top!important;}
+  header {padding-top:12px!important;}
+  main {padding-top:14px!important;}
+}
