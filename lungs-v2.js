@@ -86,11 +86,11 @@
        const current=photo.querySelector('.lung-photo-dark');
        const next=healthy;
        const currentUrl=current.style.backgroundImage;
-       next.style.backgroundImage='url("'+src+'")';
+       next.style.setProperty('background-image','url("'+src+'")','important');
        next.style.opacity='1';
        const finish=()=>{
          if(activeFrame!==index)return;
-         current.style.backgroundImage='url("'+src+'")';
+         current.style.setProperty('background-image','url("'+src+'")','important');
          next.style.opacity='0';
        };
        window.setTimeout(finish,650);
