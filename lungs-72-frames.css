@@ -47,3 +47,15 @@
  #lungStage .lung-photo-layer{animation:none!important}
  #lungStage .lung-photo-healthy{transition:none!important}
 }
+
+/* V9: white is baked into each source frame. Tint the white image
+   backdrop to match the stage, without touching app background. */
+#lungStage .lung-photo-layer {
+ background-color:#294c56!important;
+ background-blend-mode:multiply!important;
+ mix-blend-mode:multiply!important;
+}
+#lungStage .lung-photo {
+ background:#294c56!important;
+ isolation:isolate!important;
+}
