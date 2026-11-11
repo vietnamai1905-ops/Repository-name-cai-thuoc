@@ -1,15 +1,24 @@
-/* 30-step 72-hour motivational lung visualization.
-   Uses one anatomical silhouette for consistent geometry. */
-#lungStage.first-72 .lung-photo-dark {
- filter:brightness(var(--early-bright,1)) saturate(var(--early-saturate,.8)) contrast(1.12)!important;
+/* Color-safe 72-hour visualization (2026-11-11).
+   Use original anatomical images with no tint/filter. Both remain aligned.
+   JS controls crossfade opacity continuously, including beyond 72h. */
+#lungStage .lung-photo-dark {
+  background-image:url('lung-bad-v6.avif?v=hd800')!important;
+  filter:none!important;
+  opacity:1!important;
 }
-#lungStage.first-72 .lung-photo-healthy {
- background-image:url('lung-bad-v6.avif?v=hd800')!important;
- filter:sepia(1) saturate(2.6) hue-rotate(301deg) brightness(1.7) contrast(1.02)!important;
- opacity:var(--early-redblend,0)!important;
+#lungStage .lung-photo-healthy {
+  background-image:url('lung-good-v6.avif?v=hd800')!important;
+  filter:none!important;
+  /* Opacity intentionally set by JavaScript; never force it in CSS. */
+  transition:opacity 1s ease-in-out!important;
 }
-#lungStage.first-72 .lung-photo-layer { background-position:center!important;background-size:contain!important; }
-#lungStage.first-72 .lung-level-v4 {background:rgba(9,47,45,.87);color:#d8fff0}
+#lungStage .lung-photo-layer {
+  background-size:contain!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+#lungStage .lung-depth-glint {opacity:.12;mix-blend-mode:normal}
 @media(prefers-reduced-motion:reduce) {
- #lungStage.first-72 .lung-photo-layer {animation:none!important}
+ #lungStage .lung-photo-layer {animation:none!important}
+ #lungStage .lung-photo-healthy {transition:none!important}
 }
