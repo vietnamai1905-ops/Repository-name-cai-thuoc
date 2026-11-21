@@ -1,9 +1,6 @@
 name: Build iPhone icon
 on:
   push:
-    paths:
-      - 'discipline4-icon.svg'
-      - '.github/workflows/build-iphone-icon.yml'
   workflow_dispatch:
 permissions:
   contents: write
