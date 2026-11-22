@@ -1,21 +1,33 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id), dlg=$('sudokuDialog'), board=$('sudokuBoard');
 let puzzle=[],solution=[],entries=[],selected=-1,started=0,timer=null;const difficulty=$('sudokuDifficulty'),levelName=$('sudokuLevelName');
+let activeCraving=false;
+const player=new URLSearchParams(location.search).get('player')||'nathan',storeKey='sudoku_cravings_'+player;
+const today=()=>new Date().toLocaleDateString('en-CA');
+let state={saved:null,events:[]};
+try{const s=JSON.parse(localStorage.getItem(storeKey)||'null');if(s&&Array.isArray(s.events)){state.events=s.events;if(s.saved&&[s.saved.puzzle,s.saved.solution,s.saved.entries].every(a=>Array.isArray(a)&&a.length===81))state.saved=s.saved}}catch(e){console.warn(e)}
+function persist(){try{localStorage.setItem(storeKey,JSON.stringify(state));return true}catch(e){alert('Không lưu được dữ liệu trên thiết bị.');return false}}
+function stats(){const events=state.events.filter(e=>e.day===today());const el=$('crapStats');if(el)el.textContent='Cơn thèm hôm nay: '+events.filter(e=>e.type==='start').length+' · Đã vượt qua: '+events.filter(e=>e.type==='overcome').length+(state.saved?' · Có Sudoku đang lưu':'')}
+function event(type){state.events.push({day:today(),at:new Date().toISOString(),type});persist();stats()}
+function snapshot(){state.saved={puzzle:puzzle.slice(),solution:solution.slice(),entries:entries.slice(),difficulty:difficulty.value,elapsed:Math.max(0,Date.now()-started)};return persist()}
+function resume(){const s=state.saved;if(!s)return false;puzzle=s.puzzle.slice();solution=s.solution.slice();entries=s.entries.slice();difficulty.value=s.difficulty;started=Date.now()-Math.max(0,s.elapsed||0);selected=-1;levelName.textContent={easy:'Dễ',medium:'Trung bình',hard:'Khó'}[difficulty.value]||'Trung bình';$('sudokuMessage').textContent='Đã mở lại Sudoku đã lưu.';paint();clearInterval(timer);time();timer=setInterval(time,1000);if(!dlg.open)dlg.showModal();return true}
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 function valid(b,pos,n){const r=Math.floor(pos/9),c=pos%9;for(let k=0;k<9;k++){if(b[r*9+k]===n||b[k*9+c]===n)return false;const p=(Math.floor(r/3)*3+Math.floor(k/3))*9+Math.floor(c/3)*3+k%3;if(b[p]===n)return false}return true}
 function solveCount(b,limit=2){let best=-1,opts=null;for(let i=0;i<81;i++)if(!b[i]){let o=[];for(let n=1;n<=9;n++)if(valid(b,i,n))o.push(n);if(!o.length)return 0;if(!opts||o.length<opts.length){best=i;opts=o;if(o.length===1)break}}if(best<0)return 1;let count=0;for(const n of opts){b[best]=n;count+=solveCount(b,limit-count);if(count>=limit)break}b[best]=0;return count}
 function generate(){const rows=shuffle([0,1,2]), bands=shuffle([0,1,2]);const order=bands.flatMap(b=>rows.map(r=>b*3+r));const cols=shuffle([0,1,2]).flatMap(b=>shuffle([0,1,2]).map(c=>b*3+c));const nums=shuffle([1,2,3,4,5,6,7,8,9]);solution=Array.from({length:81},(_,i)=>nums[(order[Math.floor(i/9)]*3+Math.floor(order[Math.floor(i/9)]/3)+cols[i%9])%9]);puzzle=solution.slice();let removed=0;for(const i of shuffle(Array.from({length:81},(_,i)=>i))){if(removed>=({easy:35,medium:43,hard:51}[difficulty.value]||43))break;const old=puzzle[i];puzzle[i]=0;if(solveCount(puzzle.slice())!==1)puzzle[i]=old;else removed++}entries=puzzle.slice();selected=-1;started=Date.now()}
 function time(){const s=Math.floor((Date.now()-started)/1000);$('sudokuTime').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function paint(){board.replaceChildren();const completed=Array.from({length:9},(_,n)=>entries.filter(v=>v===n+1).length===9);document.querySelectorAll('[data-sdk-number]').forEach(b=>{const done=completed[Number(b.dataset.sdkNumber)-1];b.classList.toggle('sdk-complete',done);b.setAttribute('aria-label','Số '+b.dataset.sdkNumber+(done?' đã điền đủ 9 ô':''))});for(let i=0;i<81;i++){const cell=document.createElement('button');cell.type='button';const sr=Math.floor(selected/9),sc=selected%9,cr=Math.floor(i/9),cc=i%9;cell.className='sdk-cell'+(puzzle[i]?' fixed':'')+(i===selected?' chosen':selected>=0&&(cr===sr||cc===sc)?' sdk-related':'')+(selected>=0&&i!==selected&&entries[selected]&&entries[i]===entries[selected]?' sdk-same':'');cell.textContent=entries[i]||'';cell.setAttribute('aria-label','Hàng '+(Math.floor(i/9)+1)+', cột '+(i%9+1)+', '+(entries[i]||'trống'));cell.style.borderRightWidth=i%3===2&&i%9!==8?'3px':'1px';cell.style.borderBottomWidth=Math.floor(i/9)%3===2&&i<72?'3px':'1px';if(!puzzle[i]&&entries[i]&&!valid(entries.slice().map((v,j)=>j===i?0:v),i,entries[i]))cell.classList.add('wrong');cell.onclick=()=>{selected=i;paint()};board.append(cell)}}
-function set(n){if(selected<0||puzzle[selected])return;entries[selected]=n;paint();if(entries.every((v,i)=>v===solution[i])){clearInterval(timer);$('sudokuMessage').textContent='🎉 Hoàn thành! Anh đã vượt qua một cơn thèm bằng sự tập trung.';$('sudokuMessage').style.color='#91efcc'}}
+function set(n){if(selected<0||puzzle[selected])return;entries[selected]=n;paint();if(entries.every((v,i)=>v===solution[i])){state.saved=null;persist();if(activeCraving){event('overcome');activeCraving=false}clearInterval(timer);$('sudokuMessage').textContent='🎉 Hoàn thành! Anh đã vượt qua một cơn thèm bằng sự tập trung.';$('sudokuMessage').style.color='#91efcc'}}
 function openNew(){levelName.textContent={easy:'Dễ',medium:'Trung bình',hard:'Khó'}[difficulty.value]||'Trung bình';generate();$('sudokuMessage').textContent='Tập trung vào từng ô. Cơn thèm thường sẽ giảm nếu mình trì hoãn.';$('sudokuMessage').style.color='';paint();clearInterval(timer);time();timer=setInterval(time,1000);if(!dlg.open)dlg.showModal()}
-$('crapSudoku').onclick=openNew;
-difficulty.onchange=()=>{if(dlg.open)openNew()};
-$('sudokuNew').onclick=()=>{if(confirm('Tạo một bảng Sudoku mới? Bảng hiện tại sẽ mất.'))openNew()};
+$('crapSudoku').onclick=()=>{event('start');activeCraving=true;if(!resume())openNew()};
+difficulty.onchange=()=>{if(dlg.open){state.saved=null;persist();openNew()}};
+$('sudokuNew').onclick=()=>{if(confirm('Tạo một bảng Sudoku mới? Bảng hiện tại sẽ mất.')){state.saved=null;persist();openNew()}};
 $('sudokuClose').onclick=()=>dlg.close();
+$('sudokuSave').onclick=()=>{if(snapshot()){if(activeCraving){event('overcome');activeCraving=false}dlg.close();stats();alert('Đã lưu Sudoku để chơi tiếp và ghi nhận vượt qua cơn thèm!')}};
 $('sudokuErase').onclick=()=>set(0);
 $('sudokuHint').onclick=()=>{const blanks=entries.map((v,i)=>!puzzle[i]&&v!==solution[i]?i:-1).filter(i=>i>=0);if(!blanks.length)return;const i=blanks[Math.floor(Math.random()*blanks.length)];entries[i]=solution[i];selected=i;paint();$('sudokuMessage').textContent='Đã gợi ý một ô.';if(entries.every((v,j)=>v===solution[j])){clearInterval(timer);$('sudokuMessage').textContent='🎉 Đã hoàn thành!'}};
 document.querySelectorAll('[data-sdk-number]').forEach(b=>b.onclick=()=>set(Number(b.dataset.sdkNumber)));
 document.addEventListener('keydown',e=>{if(!dlg.open)return;if(/^[1-9]$/.test(e.key))set(Number(e.key));if(e.key==='Backspace'||e.key==='Delete')set(0)});
-dlg.addEventListener('close',()=>clearInterval(timer));
+dlg.addEventListener('close',()=>{clearInterval(timer);activeCraving=false});
+stats();document.addEventListener('visibilitychange',()=>{if(!document.hidden)stats()});
 })();
