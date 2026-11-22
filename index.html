@@ -48,6 +48,7 @@ const photoCache=new Map();
 const pendingPhotos=new Map();
 const artFallback=levelNames.map(([emoji],i)=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#173d46"/><stop offset="1" stop-color="#132336"/></linearGradient></defs><rect width="400" height="400" rx="28" fill="url(#g)"/><circle cx="200" cy="190" r="145" fill="#ffb46c" opacity=".12"/><text x="200" y="250" text-anchor="middle" font-size="170">'+emoji+'</text></svg>'));
 function photoFor(i){
+ if(i===0)return Promise.resolve('assets/bacteria-animated.svg');
  if(photoCache.has(i))return Promise.resolve(photoCache.get(i));
  if(pendingPhotos.has(i))return pendingPhotos.get(i);
  const request=(async()=>{
@@ -68,7 +69,7 @@ function photoFor(i){
 }
 function displayLevelPhoto(img,i){
  if(img.dataset.level===String(i))return;
- img.dataset.level=String(i);img.src=artFallback[i];img.alt='Hình minh họa '+levelNames[i][1];
+ img.dataset.level=String(i);img.src=i===0?'assets/bacteria-animated.svg':artFallback[i];img.alt='Hình minh họa '+levelNames[i][1];
  photoFor(i).then(url=>{if(img.dataset.level===String(i))img.src=url});
 }
 const formatDuration=min=>{let s=Math.max(0,Math.ceil(min*60));const d=Math.floor(s/86400);s%=86400;const hr=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);return (d?d+' ngày ':'')+(hr?hr+' giờ ':'')+(m?m+' phút ':'')+(!d&&!hr&&!m?s%60+' giây':'').trim()};
