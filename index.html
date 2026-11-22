@@ -67,10 +67,27 @@ function photoFor(i){
  })();
  pendingPhotos.set(i,request);request.finally(()=>pendingPhotos.delete(i));return request;
 }
+const evolutionVideos=['assets/evolution/level-01-bacteria.mp4','assets/evolution/level-02-ant.mp4'];
 function displayLevelPhoto(img,i){
  if(img.dataset.level===String(i))return;
- img.dataset.level=String(i);img.src=i===0?'assets/bacteria-animated.svg':artFallback[i];img.alt='Hình minh họa '+levelNames[i][1];
+ img.dataset.level=String(i);
+ img.src=i===0?'assets/bacteria-animated.svg':artFallback[i];
+ img.alt='Hình minh họa '+levelNames[i][1];
+ const holder=img.parentElement;
+ let video=holder.querySelector('video.evolution-video');
+ if(video){video.pause();video.remove();img.style.display='';}
  photoFor(i).then(url=>{if(img.dataset.level===String(i))img.src=url});
+ if(i>=evolutionVideos.length)return;
+ video=document.createElement('video');
+ video.className='evolution-video';video.muted=true;video.autoplay=true;video.loop=true;
+ video.playsInline=true;video.preload='metadata';
+ video.setAttribute('webkit-playsinline','');
+ video.style.cssText='display:none;width:min(100%,156px);height:154px;object-fit:cover;border-radius:20px;box-shadow:0 0 0 1px #ffffff40,0 8px 24px #0008';
+ const level=String(i),v=video;
+ v.addEventListener('loadeddata',()=>{if(img.dataset.level===level){img.style.display='none';v.style.display='block';v.play().catch(()=>{});}});
+ v.addEventListener('error',()=>{v.remove();img.style.display='';});
+ holder.insertBefore(v,img.nextSibling);
+ v.src=evolutionVideos[i];v.load();
 }
 const formatDuration=min=>{let s=Math.max(0,Math.ceil(min*60));const d=Math.floor(s/86400);s%=86400;const hr=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);return (d?d+' ngày ':'')+(hr?hr+' giờ ':'')+(m?m+' phút ':'')+(!d&&!hr&&!m?s%60+' giây':'').trim()};
 let milestoneCacheKey='';
